@@ -19,9 +19,17 @@ const PORT = process.env.PORT;
 // indique que note application utilise express
 const app = express();
 
-// indique que l'on va pourvoir traduire l eJSON et que l'on va utiliser des cookies
+// indique que l'on va pourvoir traduire le JSON et que l'on va utiliser des cookies
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173", //tant qu'on est en local on peut mettre * à la place (plus simple)
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-type"],
+    credentials: true,
+  })
+);
 
 // chaque root localhost:2003 sera redirigé vers le dossier routes
 app.use("/", routes);
