@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { NavLink } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const defaultValues = {
@@ -25,9 +26,28 @@ export default function Login() {
     mode: "onChange",
   });
 
-  function submit(values) {
-    console.log(values);
-    reset(defaultValues);
+  async function submit(values) {
+    // console.log(values);
+    try {
+      const response = await fetch("http://localhost:2003/user/login", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const responseFromBackend = await response.json();
+      if (response.ok) {
+        toast.success(responseFromBackend.message);
+        navigate("/");
+        reset(defaultValues);
+      } else {
+        toast.error(responseFromBackend.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    // reset(defaultValues);
     // requete HTTP
   }
   return (
