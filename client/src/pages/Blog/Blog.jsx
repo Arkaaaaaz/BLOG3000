@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Card from "../../components/Common/Card";
+import { getBlogsFromApi } from "../../api/blog.api";
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
     const getAllBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:2003/blog");
-        const blogsFromBackend = await response.json();
-        console.log(blogsFromBackend);
-        setBlogs(blogsFromBackend);
+        const response = await getBlogsFromApi();
+        setBlogs(response);
+        //console.log(blogsFromBackend);
       } catch (error) {
         console.log(error);
       }
