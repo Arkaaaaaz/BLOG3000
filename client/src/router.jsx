@@ -5,6 +5,7 @@ import Blog from "./pages/Blog/Blog";
 import Register from "./pages/Forms/Register";
 import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/Forms/Login";
+import BlogDetails from "./pages/Blog/components/BlogDetails";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: "/blog",
         element: <Blog />,
+      },
+      {
+        path: "/blogdetails/:id",
+        element: <BlogDetails />,
       },
       {
         path: "/register",
