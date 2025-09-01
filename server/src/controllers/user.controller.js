@@ -1,23 +1,43 @@
+import TempUser from "../models/tempuser.schema.js";
 import User from "../models/user.schema.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { sendConfirmationEmail } from "../email/email.js";
 
+const createTokenEmail = (email) => {
+  return jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "120s" });
+};
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = await User.findOne({ email });
-    const secondUser = await User.findOne({ username });
+    const existingUserMail = await User.findOne({ email });
+    const existingUserPseudo = await User.findOne({ username });
+    const existingTempUserMail = await TempUser.findOne({ email });
+    const existingTempUserPseudo = await TempUser.findOne({ username });
+
+    if (existingUserMail || existingUserPseudo) {
+      return res.status(400).json({ message: "Déjà inscrit" });
+    } else if (existingTempUserMail || existingTempUserPseudo) {
+      return res.status(400).json({ message: "Vérifiez vos email" });
+    }
+
+    const token = createTokenEmail(email);
+    await sendConfirmationEmail(email, token);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (user || secondUser) {
-      return res.status(400).json({ message: "Déjà inscrit" });
-    }
-    const newUser = new User({
+    const tempUser = new TempUser({
       username,
       email,
       password: hashedPassword,
+      token,
     });
-    await newUser.save();
-    res.status(200).json({ message: "Utilisateur enregistré" });
+
+    await tempUser.save();
+    res.status(200).json({
+      message:
+        "Veuillez confirmer votre inscription en consultant votre boîte mail",
+    });
   } catch (error) {
     console.log(error);
   }
@@ -50,4 +70,8 @@ export const login = async (req, res) => {
 
   // Si tout est bon
   res.status(200).json({ user, message: "Connexion réussie" });
+};
+
+export const verifyMail = async (req, res) => {
+  console.log("TEST EMAIL");
 };
