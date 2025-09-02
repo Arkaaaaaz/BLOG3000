@@ -22,7 +22,9 @@ export const register = async (req, res) => {
     if (existingUserMail || existingUserPseudo) {
       return res.status(400).json({ message: "Déjà inscrit" });
     } else if (existingTempUserMail || existingTempUserPseudo) {
-      return res.status(400).json({ message: "Vérifiez vos email" });
+      return res.status(400).json({
+        message: "Vérifiez vos email",
+      });
     }
 
     const token = createTokenEmail(email);

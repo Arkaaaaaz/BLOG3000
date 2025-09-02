@@ -38,7 +38,7 @@ export default function Login() {
         method: "POST",
         body: JSON.stringify(values),
         headers: {
-          "Content-type": "application/json",
+          "Content-Type": "application/json",
         },
       });
       const responseFromBackend = await response.json();
