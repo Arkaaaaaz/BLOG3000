@@ -7,4 +7,4 @@ router.get("/", getBlogs);
 
 export default router;
 
-// http://localhost:2003/blog
+// http://localhost:5000/blog

@@ -11,4 +11,4 @@ router.get("/verifyMail/:token", verifyMail);
 
 export default router;
 
-// http://localhost:2003/user
+// http://localhost:5000/user

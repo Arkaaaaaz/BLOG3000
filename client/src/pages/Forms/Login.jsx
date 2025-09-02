@@ -34,7 +34,7 @@ export default function Login() {
   async function submit(values) {
     // console.log(values);
     try {
-      const response = await fetch("http://localhost:2003/user/login", {
+      const response = await fetch("http://localhost:5000/user/login", {
         method: "POST",
         body: JSON.stringify(values),
         headers: {
