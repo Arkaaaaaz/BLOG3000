@@ -10,9 +10,7 @@ export async function signUp(values) {
       },
     });
     const newUserMessage = await response.json();
-    if (response.ok) {
-      return newUserMessage;
-    }
+    return newUserMessage;
   } catch (error) {
     console.log(error);
   }

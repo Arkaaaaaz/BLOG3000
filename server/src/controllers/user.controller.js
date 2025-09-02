@@ -1,12 +1,16 @@
-import TempUser from "../models/tempuser.schema.js";
 import User from "../models/user.schema.js";
+import TempUser from "../models/tempuser.schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendConfirmationEmail } from "../email/email.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const createTokenEmail = (email) => {
   return jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "120s" });
 };
+
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -32,11 +36,10 @@ export const register = async (req, res) => {
       password: hashedPassword,
       token,
     });
-
     await tempUser.save();
     res.status(200).json({
       message:
-        "Veuillez confirmer votre inscription en consultant votre boîte mail",
+        "Veuillez confirmer votre inscription en consultant votre boite mail",
     });
   } catch (error) {
     console.log(error);
@@ -45,7 +48,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { data, password } = req.body;
+
+  // 1 - vérifier en console si je récupère les données
   console.log(req.body);
+
+  // 2 - Véification des données
 
   let user;
 
@@ -67,11 +74,37 @@ export const login = async (req, res) => {
   if (!isPasswordValid) {
     return res.status(400).json({ message: "Mot de passe incorrect" });
   }
+  // 3 - ajout des données
 
-  // Si tout est bon
+  // 4 - envoi données et/ou message front
   res.status(200).json({ user, message: "Connexion réussie" });
 };
 
 export const verifyMail = async (req, res) => {
-  console.log("TEST EMAIL");
+  const { token } = req.params;
+  console.log(token);
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const tempUser = await TempUser.findOne({ email: decoded.email, token });
+    console.log(tempUser);
+
+    if (!tempUser) {
+      return res.redirect(`${process.env.CLIENT_URL}/register?message=error`);
+    }
+
+    const newUser = new User({
+      username: tempUser.username,
+      email: tempUser.email,
+      password: tempUser.password,
+    });
+    await newUser.save();
+    await TempUser.deleteOne({ email: tempUser.email });
+    res.redirect(`${process.env.CLIENT_URL}/register?message=success`);
+  } catch (error) {
+    console.log(error);
+    if (error.name === "TokenExpiredError") {
+      return res.redirect(`${process.env.CLIENT_URL}/register?message=error`);
+    }
+  }
 };

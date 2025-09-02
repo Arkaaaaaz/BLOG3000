@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 
 export default function BlogDetails() {
   const { id } = useParams();
-  // console.log(id);
+  //   console.log(id);
   const { blogs } = useBlog();
-  // console.log(blogs)
+  //   console.log(blogs);
+
   const [details, setDetails] = useState(null);
 
   useEffect(() => {
@@ -15,20 +16,16 @@ export default function BlogDetails() {
   }, [id, blogs]);
 
   if (!details) {
-    return <p>Chargement...</p>;
+    return <p>Chargement ...</p>;
   }
 
   return (
     <div>
-      {details && (
-        <>
-          <h3>{details.titre}</h3>
-          <p>{details.texte}</p>
-          <div className="w-[300px] h-[300px]">
-            <img src={details.image} alt="" />
-          </div>
-        </>
-      )}
+      <h3>{details.titre}</h3>
+      <p>{details.texte}</p>
+      <div className="w-[300px] h-[300px]">
+        <img src={details.image} alt="" />
+      </div>
     </div>
   );
 }

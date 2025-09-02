@@ -5,7 +5,7 @@ export default function Blog() {
   const { blogs } = useBlog();
   return (
     <div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {blogs.map((blog) => (
           <Card key={blog._id} blog={blog} />
         ))}

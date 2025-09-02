@@ -1,7 +1,7 @@
 import express from "express";
 
-import userRoutes from "./user.routes.js";
-import blogRoutes from "./blog.routes.js";
+import userRoutes from "./user.route.js";
+import blogRoutes from "./blog.route.js";
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.use("/user", userRoutes);
 
 export default router;
 
-// http://localhost:5000
+// http://localhost:2003

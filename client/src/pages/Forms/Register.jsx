@@ -1,12 +1,28 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  replace,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import toast from "react-hot-toast";
 import { signUp } from "../../api/auth.api";
+import { useEffect } from "react";
 
 export default function Register() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const message = params.get("message");
+  console.log(message);
+
+  useEffect(() => {
+    if (message === "error") {
+      toast.error("Délai dépassé. Veuillez vous réinscrire");
+      navigate("/register", { replace: true });
+    }
+  }, [message, navigate]);
 
   const defaultValues = {
     username: "",
@@ -52,8 +68,8 @@ export default function Register() {
   });
 
   async function submit(values) {
-    // console.log(values);
     try {
+      // faire appel à une méthode qui fait la requete HTTP
       const responseFromBackend = await signUp(values);
       if (responseFromBackend.message !== "Déjà inscrit") {
         toast.success(responseFromBackend.message);

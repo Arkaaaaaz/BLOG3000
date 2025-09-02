@@ -5,7 +5,7 @@ const tempUserSchema = new mongoose.Schema(
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    token: { type: String },
+    token: String,
   },
   {
     timestamps: true,
@@ -14,6 +14,6 @@ const tempUserSchema = new mongoose.Schema(
 
 tempUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 120 });
 
-const TempUser = mongoose.model("tempUser", tempUserSchema);
+const TempUser = mongoose.model("TempUser", tempUserSchema);
 
 export default TempUser;
