@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 import { createContext } from "react";
 import { useLoaderData } from "react-router-dom";
+import { signout } from "../api/auth.api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const initialUser = useLoaderData()
+  const initialUser = useLoaderData();
   const [userConnected, setUserConnected] = useState(initialUser);
 
   console.log(userConnected);
@@ -13,8 +14,9 @@ export function AuthProvider({ children }) {
     setUserConnected(values);
   };
 
-  const logout = () => {
-    setUserConnected(nul);
+  const logout = async () => {
+    await signout();
+    setUserConnected(null);
   };
 
   return (

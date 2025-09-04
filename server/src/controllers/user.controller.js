@@ -137,7 +137,7 @@ export const currentUser = async (req, res) => {
       if (currentUser) {
         res.status(200).json(currentUser);
       } else {
-        res.status(400).json(null)
+        res.status(400).json(null);
       }
     } catch (error) {
       res.status(400).json(null);
@@ -145,4 +145,13 @@ export const currentUser = async (req, res) => {
   } else {
     res.status(400).json(null);
   }
+};
+
+export const logoutUser = async (req, res) => {
+  res.clearCookie("token", {
+    //il faut bien utiliser le nom donné au token dans les autres fichiers
+    httpOnly: true,
+    secure: false,
+  });
+  res.status(200).json({ message: "Déconnexion réussie" });
 };
