@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { signIn } from "../../api/auth.api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -34,24 +35,15 @@ export default function Login() {
   async function submit(values) {
     // console.log(values);
     try {
-      const response = await fetch("http://localhost:5000/user/login", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const responseFromBackend = await response.json();
-      console.log(responseFromBackend);
+      const userConnected = await signIn(values);
 
-      if (response.ok) {
+      if (userConnected.user) {
         toast.success("Bien connecté");
-        login(responseFromBackend.user);
-
+        login(userConnected.user);
         navigate("/");
         reset(defaultValues);
       } else {
-        toast.error(responseFromBackend.message);
+        toast.error(userConnected.message);
       }
     } catch (error) {
       console.log(error);

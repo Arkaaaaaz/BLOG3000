@@ -6,12 +6,14 @@ import Register from "./pages/Forms/Register";
 import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/Forms/Login";
 import BlogDetails from "./pages/Blog/components/BlogDetails";
+import { rootLoader } from "./loaders/rootLoader";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
+    loader: rootLoader,
     children: [
       {
         path: "/",

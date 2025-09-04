@@ -78,6 +78,18 @@ export const login = async (req, res) => {
   }
   // 3 - ajout des données
 
+  const token = jwt.sign({}, process.env.SECRET_KEY, {
+    subject: user._id.toString(),
+    expiresIn: "7d",
+    algorithm: "HS256",
+  });
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false, //à passer en true dès lors que l'on est plus en local
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
   // 4 - envoi données et/ou message front
   res.status(200).json({ user, message: "Connexion réussie" });
 };
@@ -108,5 +120,29 @@ export const verifyMail = async (req, res) => {
     if (error.name === "TokenExpiredError") {
       return res.redirect(`${process.env.CLIENT_URL}/register?message=error`);
     }
+  }
+};
+
+export const currentUser = async (req, res) => {
+  const { token } = req.cookies;
+
+  if (token) {
+    try {
+      //vérifie et décode le token avec le clé secrète
+      const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+
+      // récupère l'utilisateur en se servant de l'ID du token
+      const currentUser = await User.findById(decodedToken.sub);
+
+      if (currentUser) {
+        res.status(200).json(currentUser);
+      } else {
+        res.status(400).json(null)
+      }
+    } catch (error) {
+      res.status(400).json(null);
+    }
+  } else {
+    res.status(400).json(null);
   }
 };

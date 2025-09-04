@@ -1,12 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  NavLink,
-  replace,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { signUp } from "../../api/auth.api";
 import { useEffect } from "react";
@@ -21,6 +16,9 @@ export default function Register() {
     if (message === "error") {
       toast.error("Délai dépassé. Veuillez vous réinscrire");
       navigate("/register", { replace: true });
+    } else if (message === "success") {
+      toast.success("Inscription validée");
+      navigate("/");
     }
   }, [message, navigate]);
 
